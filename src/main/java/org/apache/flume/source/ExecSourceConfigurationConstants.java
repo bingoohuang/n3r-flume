@@ -37,7 +37,7 @@ public class ExecSourceConfigurationConstants {
    * Should stderr from the command be logged: default false
    */
   public static final String CONFIG_LOG_STDERR = "logStdErr";
-  public static final boolean DEFAULT_LOG_STDERR = false;
+  public static final boolean DEFAULT_LOG_STDERR = true;
 
   /**
    * Number of lines to read at a time
@@ -46,7 +46,7 @@ public class ExecSourceConfigurationConstants {
   public static final int DEFAULT_BATCH_SIZE = 20;
 
   /**
-   * Amount of time to wait, if the buffer size was not reached, before 
+   * Amount of time to wait, if the buffer size was not reached, before
    * to data is pushed downstream: : default 3000 ms
    */
   public static final String CONFIG_BATCH_TIME_OUT = "batchTimeout";
