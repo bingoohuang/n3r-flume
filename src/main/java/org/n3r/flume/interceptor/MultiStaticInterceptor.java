@@ -23,6 +23,7 @@ import static org.n3r.flume.interceptor.MultiStaticInterceptor.Constants.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
@@ -130,25 +131,53 @@ public class MultiStaticInterceptor implements Interceptor {
 
     @Override
     public Interceptor build() {
-      logger.info(String.format("Creating StaticInterceptor: preserveExisting=%s,keyval=%s", preserveExisting, keyValues));
+      logger.info(String.format("Creating StaticInterceptor: preserveExisting=%s,keyValues=%s",
+              preserveExisting, keyValues));
 
       if (StringUtils.isEmpty(keyValues))
           return new MultiStaticInterceptor(preserveExisting, null);
 
       Map<String, String> kvMap = new HashMap<String, String>();
       Splitter splitter = Splitter.onPattern("\\s").omitEmptyStrings().trimResults();
-      Iterable<String> kvPair = splitter.split(keyValues);
-      for (String pair : kvPair) {
-          String[] split = pair.split(keyValueSeperator);
-          if (split.length < 2 || StringUtils.isEmpty(split[0])) {
-              logger.warn("keyval configure error [{}]", pair);
-              continue;
-          }
-          kvMap.put(split[0], split[1]);
+      Iterable<String> kvPairs = splitter.split(keyValues);
+      for (String pair : kvPairs) {
+          Entry<String, String> entry = parseEntry(pair);
+          if (entry != null) kvMap.put(entry.getKey(), entry.getValue());
       }
       return new MultiStaticInterceptor(preserveExisting, kvMap);
     }
 
+    private Map.Entry<String, String> parseEntry(final String pair) {
+        final int pos = pair.indexOf(keyValueSeperator);
+        if (pos < 0) {
+            logger.warn("KeyValues configure format error [{}]", pair);
+            return null;
+        }
+
+        String key = StringUtils.trim(pair.substring(0, pos));
+        if (StringUtils.isEmpty(key)) {
+            logger.warn("KeyValues configure error, key is empty [{}]", pair);
+            return null;
+        }
+
+        return new Map.Entry<String, String>() {
+
+            @Override
+            public String getKey() {
+                return StringUtils.trim(pair.substring(0, pos));
+            }
+
+            @Override
+            public String getValue() {
+                return StringUtils.trim(StringUtils.substring(pair, pos + keyValueSeperator.length()));
+            }
+
+            @Override
+            public String setValue(String value) {
+                return null;
+            }
+        };
+    }
 
   }
 
