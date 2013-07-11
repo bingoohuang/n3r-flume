@@ -48,6 +48,8 @@ public class SequenceGeneratorSource extends AbstractSource implements
   private long totalEvents;
   private long eventsSent = 0;
   private Random random = new Random();
+    private int sleepMinMillis; // 每次休眠的最少毫秒
+    private int sleepMaxMillis; // 每次休眠的最大毫秒
 
   /**
    * Read parameters from context
@@ -63,6 +65,9 @@ public class SequenceGeneratorSource extends AbstractSource implements
     if (sourceCounter == null) {
       sourceCounter = new SourceCounter(getName());
     }
+
+      sleepMinMillis = context.getInteger("sleepMinMillis", 100);
+      sleepMaxMillis = context.getInteger("sleepMaxMillis", 1000);
   }
 
   @Override
@@ -106,7 +111,8 @@ public class SequenceGeneratorSource extends AbstractSource implements
 
     private Event createEvent() {
         try {
-            TimeUnit.MILLISECONDS.sleep(100 + random.nextInt(1000));
+            TimeUnit.MILLISECONDS.sleep(sleepMinMillis
+                    + random.nextInt(sleepMaxMillis - sleepMinMillis));
         } catch (InterruptedException e) {
             // ignore.
         }

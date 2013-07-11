@@ -475,7 +475,7 @@ implements RpcClient {
     // batch size
     String strBatchSize = properties.getProperty(
         RpcClientConfigurationConstants.CONFIG_BATCH_SIZE);
-    logger.debug("Batch size string = " + strBatchSize);
+    logger.debug("Batch size string = {}", strBatchSize);
     batchSize = RpcClientConfigurationConstants.DEFAULT_BATCH_SIZE;
     if (strBatchSize != null && !strBatchSize.isEmpty()) {
       try {
