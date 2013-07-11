@@ -66,7 +66,7 @@ public class LoggerSink extends AbstractSink {
       event = channel.take();
 
       if (event != null) {
-        logger.info("Event: {} ", EventHelper.dumpEvent(event));
+        logger.info("{}", EventHelper.dumpEvent(event));
       } else {
         // No event found, request back-off semantics from the sink runner
         result = Status.BACKOFF;

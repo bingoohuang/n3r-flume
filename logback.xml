@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="Console2" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="EcAopFileAppender" class="ch.qos.logback.classic.sift.MultiKeysSiftingAppender">
+        <discriminator class="ch.qos.logback.classic.sift.MDCBasedMultiKeysDiscriminator">
+            <key>module</key>
+            <defaultValue>unknown</defaultValue>
+        </discriminator>
+        <sift>
+            <appender name="EcAop-${module}" class="ch.qos.logback.core.rolling.RollingFileAppender">
+                <File>flumelog/${module}.log</File>
+                <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                    <FileNamePattern>flumelog/${module}.%d{yyyy-MM-dd HH:mm}.%i.log.gz</FileNamePattern>
+                    <!-- keep 30 days' worth of history -->
+                    <maxHistory>30</maxHistory>
+                    <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                        <!-- or whenever the file size reaches 100MB -->
+                        <maxFileSize>1KB</maxFileSize>
+                    </timeBasedFileNamingAndTriggeringPolicy>
+                </rollingPolicy>
+                <encoder>
+                    <pattern>%d{HH:mm:ss.SSS} %X{host} %X{server}- %msg%n</pattern>
+                </encoder>
+            </appender>
+        </sift>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="Console" />
+    </root>
+
+    <logger name="org.apache.flume.sink.LoggerSink" additivity="false">
+        <level value="INFO" />
+        <appender-ref ref="EcAopFileAppender" />
+    </logger>
+
+</configuration>
+

@@ -30,6 +30,7 @@ import org.apache.commons.io.HexDump;
 import org.apache.flume.Event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 public class EventHelper {
 
@@ -60,14 +61,17 @@ public class EventHelper {
         if (headers != null ) {
             bodyType = headers.get(Event.bodyType);
             bodyCharset = headers.get(Event.bodyCharset);
+            for(Map.Entry<String, String> entry : headers.entrySet()) {
+                MDC.put(entry.getKey(), entry.getValue());
+            }
         }
 
         if (bodyCharset == null) bodyCharset = "UTF-8";
         if ("long".equals(bodyType)) {
-            return "{ headers:" + headers + " body:" + Longs.fromByteArray(body) + " }";
+            return "" + Longs.fromByteArray(body);
         }
         if ("string".equals(bodyType)) {
-            return "{ headers:" + headers + " body:" + fromBytes(body, bodyCharset) + " }";
+            return fromBytes(body, bodyCharset);
         }
 
       byte[] data = Arrays.copyOf(body, Math.min(body.length, maxBytes));
