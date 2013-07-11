@@ -65,9 +65,13 @@ public class EventBuilder {
   public static Event withBody(String body, Charset charset,
       Map<String, String> headers) {
 
-      Map<String, String> newHeaders = Maps.newHashMap(headers);
-      headers.put(Event.bodyType, "string");
-      headers.put(Event.bodyCharset, charset.name());
+      Map<String, String> newHeaders = null;
+
+      if (headers == null ) newHeaders = Maps.newHashMap();
+      else newHeaders = Maps.newHashMap(headers);
+
+      newHeaders.put(Event.bodyType, "string");
+      newHeaders.put(Event.bodyCharset, charset.name());
 
     return withBody(body.getBytes(charset), newHeaders);
   }

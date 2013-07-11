@@ -282,7 +282,7 @@ public class ExecBlockSource extends AbstractSource implements EventDrivenSource
             if (null == boundaryRegex) {
                 logger.info("Line : [{}]", line);
                 sourceCounter.incrementEventReceivedCount();
-                eventList.add(EventBuilder.withBody(line.getBytes(charset)));
+                eventList.add(EventBuilder.withBody(line, charset));
                 return;
             }
 
@@ -313,7 +313,7 @@ public class ExecBlockSource extends AbstractSource implements EventDrivenSource
         private void flushBlock() {
             synchronized (block) {
                 logger.info("Block : [{}]", block.toString());
-                eventList.add(EventBuilder.withBody(block.toString().getBytes(charset)));
+                eventList.add(EventBuilder.withBody(block.toString(), charset));
                 block.delete(0, block.length());
             }
         }
