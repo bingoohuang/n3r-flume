@@ -52,7 +52,7 @@ import com.google.common.base.Splitter;
  *   agent.sources.r1.interceptors = i1<p>
  *   agent.sources.r1.interceptors.i1.type = multi_static<p>
  *   agent.sources.r1.interceptors.i1.preserveExisting = false<p>
- *   agent.sources.r1.interceptors.i1.keyval = key1,val1 key2,val2<p>
+ *   agent.sources.r1.interceptors.i1.keyValues = key1:value1 key2:value2<p>
  * </code>
  *
  */
@@ -61,14 +61,14 @@ public class MultiStaticInterceptor implements Interceptor {
   private static final Logger logger = LoggerFactory.getLogger(MultiStaticInterceptor.class);
 
   private final boolean preserveExisting;
-  private final Map<String, String> keyval;
+  private final Map<String, String> keyValues;
 
   /**
    * Only {@link MultiStaticInterceptor.Builder} can build me
    */
-  private MultiStaticInterceptor(boolean preserveExisting, Map<String, String> keyval) {
+  private MultiStaticInterceptor(boolean preserveExisting, Map<String, String> keyValues) {
     this.preserveExisting = preserveExisting;
-    this.keyval = keyval;
+    this.keyValues = keyValues;
   }
 
   @Override
@@ -81,11 +81,11 @@ public class MultiStaticInterceptor implements Interceptor {
    */
   @Override
   public Event intercept(Event event) {
-    if (MapUtils.isEmpty(keyval)) return event;
+    if (MapUtils.isEmpty(keyValues)) return event;
 
     Map<String, String> headers = event.getHeaders();
 
-    for(Map.Entry<String, String> entry : keyval.entrySet()) {
+    for(Map.Entry<String, String> entry : keyValues.entrySet()) {
         if (preserveExisting && headers.containsKey(entry.getKey()))
             continue;
         headers.put(entry.getKey(), entry.getValue());
@@ -118,28 +118,28 @@ public class MultiStaticInterceptor implements Interceptor {
   public static class Builder implements Interceptor.Builder {
 
     private boolean preserveExisting;
-    private String keyval;
-    private String kvSeperator;
+    private String keyValues;
+    private String keyValueSeperator;
 
     @Override
     public void configure(Context context) {
       preserveExisting = context.getBoolean(PRESERVE, PRESERVE_DFLT);
-      keyval = context.getString(KEY_VAL, KEY_VAL_DFLT);
-      kvSeperator = context.getString(KV_SEPERATOR, KV_SEPERATOR_DFLT);
+      keyValues = context.getString(KEY_VALUES, KEY_VALUES_DFLT);
+      keyValueSeperator = context.getString(KEY_VALUE_SEPERATOR, KEY_VALUE_SEPERATOR_DFLT);
     }
 
     @Override
     public Interceptor build() {
-      logger.info(String.format("Creating StaticInterceptor: preserveExisting=%s,keyval=%s", preserveExisting, keyval));
+      logger.info(String.format("Creating StaticInterceptor: preserveExisting=%s,keyval=%s", preserveExisting, keyValues));
 
-      if (StringUtils.isEmpty(keyval))
+      if (StringUtils.isEmpty(keyValues))
           return new MultiStaticInterceptor(preserveExisting, null);
 
       Map<String, String> kvMap = new HashMap<String, String>();
       Splitter splitter = Splitter.onPattern("\\s").omitEmptyStrings().trimResults();
-      Iterable<String> kvPair = splitter.split(keyval);
+      Iterable<String> kvPair = splitter.split(keyValues);
       for (String pair : kvPair) {
-          String[] split = pair.split(kvSeperator);
+          String[] split = pair.split(keyValueSeperator);
           if (split.length < 2 || StringUtils.isEmpty(split[0])) {
               logger.warn("keyval configure error [{}]", pair);
               continue;
@@ -154,11 +154,11 @@ public class MultiStaticInterceptor implements Interceptor {
 
   public static class Constants {
 
-    public static final String KEY_VAL = "keyval";
-    public static final String KEY_VAL_DFLT = "";
+    public static final String KEY_VALUES = "keyValues";
+    public static final String KEY_VALUES_DFLT = "";
 
-    public static final String KV_SEPERATOR = "seperator";
-    public static final String KV_SEPERATOR_DFLT = ",";
+    public static final String KEY_VALUE_SEPERATOR = "seperator";
+    public static final String KEY_VALUE_SEPERATOR_DFLT = ":";
 
     public static final String PRESERVE = "preserveExisting";
     public static final boolean PRESERVE_DFLT = true;

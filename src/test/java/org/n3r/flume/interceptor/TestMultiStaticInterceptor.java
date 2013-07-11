@@ -38,8 +38,8 @@ public class TestMultiStaticInterceptor {
         Interceptor.Builder builder = InterceptorBuilderFactory.newInstance(
                 InterceptorType.MULTI_STATIC.toString());
         Context ctx = new Context();
-        ctx.put(Constants.KV_SEPERATOR, "=");
-        ctx.put(Constants.KEY_VAL, "key1=val1");
+        ctx.put(Constants.KEY_VALUE_SEPERATOR, "=");
+        ctx.put(Constants.KEY_VALUES, "key1=val1");
 
         builder.configure(ctx);
         Interceptor interceptor = builder.build();
@@ -59,7 +59,7 @@ public class TestMultiStaticInterceptor {
         Interceptor.Builder builder = InterceptorBuilderFactory.newInstance(
                 InterceptorType.MULTI_STATIC.toString());
         Context ctx = new Context();
-        ctx.put(Constants.KEY_VAL, "key1,val1 key2,val2");
+        ctx.put(Constants.KEY_VALUES, "key1:val1 key2:val2");
 
         builder.configure(ctx);
         Interceptor interceptor = builder.build();
@@ -83,7 +83,7 @@ public class TestMultiStaticInterceptor {
                 InterceptorType.MULTI_STATIC.toString());
         Context ctx = new Context();
         ctx.put(Constants.PRESERVE, "false");
-        ctx.put(Constants.KEY_VAL, "mutable,replacement");
+        ctx.put(Constants.KEY_VALUES, "mutable:replacement");
 
         builder.configure(ctx);
         Interceptor interceptor = builder.build();
@@ -105,7 +105,7 @@ public class TestMultiStaticInterceptor {
                 InterceptorType.MULTI_STATIC.toString());
         Context ctx = new Context();
         ctx.put(Constants.PRESERVE, "true");
-        ctx.put(Constants.KEY_VAL, "immutable,replacement");
+        ctx.put(Constants.KEY_VALUES, "immutable:replacement");
 
         builder.configure(ctx);
         Interceptor interceptor = builder.build();
