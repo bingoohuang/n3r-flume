@@ -29,6 +29,7 @@ import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
+import org.apache.flume.conf.ConfigurationException;
 import org.apache.flume.interceptor.Interceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -125,7 +126,11 @@ public class MultiStaticInterceptor implements Interceptor {
     @Override
     public void configure(Context context) {
       preserveExisting = context.getBoolean(PRESERVE, PRESERVE_DFLT);
-      keyValues = context.getString(KEY_VALUES, KEY_VALUES_DFLT);
+
+      keyValues = context.getString(KEY_VALUES);
+      if (StringUtils.isEmpty(keyValues))
+          throw new ConfigurationException("KeyValues is null !");
+
       keyValueSeperator = context.getString(KEY_VALUE_SEPERATOR, KEY_VALUE_SEPERATOR_DFLT);
     }
 
@@ -149,16 +154,12 @@ public class MultiStaticInterceptor implements Interceptor {
 
     private Map.Entry<String, String> parseEntry(final String pair) {
         final int pos = pair.indexOf(keyValueSeperator);
-        if (pos < 0) {
-            logger.warn("KeyValues configure format error [{}]", pair);
-            return null;
-        }
+        if (pos < 0)
+            throw new ConfigurationException("KeyValues format error : " + pair);
 
         String key = StringUtils.trim(pair.substring(0, pos));
-        if (StringUtils.isEmpty(key)) {
-            logger.warn("KeyValues configure error, key is empty [{}]", pair);
-            return null;
-        }
+        if (StringUtils.isEmpty(key))
+            throw new ConfigurationException("The key of keyValues is empty : " + pair);
 
         return new Map.Entry<String, String>() {
 
@@ -184,7 +185,6 @@ public class MultiStaticInterceptor implements Interceptor {
   public static class Constants {
 
     public static final String KEY_VALUES = "keyValues";
-    public static final String KEY_VALUES_DFLT = "";
 
     public static final String KEY_VALUE_SEPERATOR = "seperator";
     public static final String KEY_VALUE_SEPERATOR_DFLT = ":";
