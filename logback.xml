@@ -21,12 +21,12 @@
             <appender name="EcAop-${module}" class="ch.qos.logback.core.rolling.RollingFileAppender">
                 <File>flumelog/${module}.log</File>
                 <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-                    <FileNamePattern>flumelog/${module}.%d{yyyy-MM-dd HH:mm}.%i.log.gz</FileNamePattern>
+                    <FileNamePattern>flumelog/${module}.%d{yyyy-MM-dd}.%i.log.gz</FileNamePattern>
                     <!-- keep 30 days' worth of history -->
                     <maxHistory>30</maxHistory>
                     <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                         <!-- or whenever the file size reaches 100MB -->
-                        <maxFileSize>1KB</maxFileSize>
+                        <maxFileSize>100MB</maxFileSize>
                     </timeBasedFileNamingAndTriggeringPolicy>
                 </rollingPolicy>
                 <encoder>
