@@ -72,9 +72,9 @@ public class LoggerSink extends AbstractSink {
         result = Status.BACKOFF;
       }
       transaction.commit();
-    } catch (Exception ex) {
+    } catch (Throwable t) {
       transaction.rollback();
-      throw new EventDeliveryException("Failed to log event: " + event, ex);
+      throw new EventDeliveryException("Failed to log event: " + event, t);
     } finally {
       transaction.close();
     }
