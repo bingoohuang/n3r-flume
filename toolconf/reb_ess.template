@@ -1,0 +1,9 @@
+${agentName}.sources.${source}.type = org.n3r.flume.source.exec.ExecBlockSource
+${agentName}.sources.${source}.command = tail -F ${file}
+${agentName}.sources.${source}.boundaryRegex = ^.+调用报文
+${agentName}.sources.${source}.interceptors = host static
+${agentName}.sources.${source}.charset = GBK
+${agentName}.sources.${source}.interceptors.host.type = host
+${agentName}.sources.${source}.interceptors.static.type = multi_static
+${agentName}.sources.${source}.interceptors.static.keyValues = server:${server} module:${module}
+${agentName}.sources.${source}.channels = mem

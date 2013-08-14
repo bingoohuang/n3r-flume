@@ -20,17 +20,12 @@ package org.apache.flume.interceptor;
 
 import static org.apache.flume.interceptor.HostInterceptor.Constants.*;
 
-import java.net.Inet6Address;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.net.UnknownHostException;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.flume.Context;
 import org.apache.flume.Event;
+import org.n3r.core.lang.RIP;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,35 +80,8 @@ public class HostInterceptor implements Interceptor {
     private HostInterceptor(boolean preserveExisting, boolean useIP, String header) {
         this.preserveExisting = preserveExisting;
         this.header = header;
-        InetAddress addr = null;
-        NetworkInterface ni = null;
-        try {
-            ni = NetworkInterface.getByName("bond0");
-        }
-        catch (SocketException e) {
-            logger.warn("Get NetworkInterface bond0 fail", e);
-        }
 
-        if (null != ni) {
-            Enumeration<InetAddress> addresses = ni.getInetAddresses();
-            while (addresses.hasMoreElements()) {
-                InetAddress ia = addresses.nextElement();
-                if (ia instanceof Inet6Address) continue;
-                addr = ia;
-                break;
-            }
-        }
-        else {
-            try {
-                addr = InetAddress.getLocalHost();
-            }
-            catch (UnknownHostException e) {
-                logger.warn("Get LocalHost fail", e);
-            }
-        }
-
-        host = useIP ? addr.getHostAddress() : addr.getCanonicalHostName();
-        System.out.println(host);
+        host = useIP ? RIP.getIp() : RIP.getHostName();
     }
 
     @Override

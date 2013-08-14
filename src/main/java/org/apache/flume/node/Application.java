@@ -24,6 +24,7 @@ import com.google.common.collect.Lists;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import org.apache.commons.cli.*;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.flume.*;
 import org.apache.flume.instrumentation.MonitorService;
 import org.apache.flume.instrumentation.MonitoringType;
@@ -31,6 +32,7 @@ import org.apache.flume.lifecycle.LifecycleAware;
 import org.apache.flume.lifecycle.LifecycleState;
 import org.apache.flume.lifecycle.LifecycleSupervisor;
 import org.apache.flume.lifecycle.LifecycleSupervisor.SupervisorPolicy;
+import org.n3r.core.lang.RIP;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -226,6 +228,10 @@ public class Application  {
       option.setRequired(false);
       options.addOption(option);
 
+        option = new Option("i", "ip", false, "use ip as postfix of name, like agent_10.141.1.2");
+        option.setRequired(false);
+        options.addOption(option);
+
       option = new Option("f", "conf-file", true, "specify a conf file");
       option.setRequired(false);
       options.addOption(option);
@@ -241,6 +247,10 @@ public class Application  {
 
       File configurationFile = new File(commandLine.getOptionValue('f', "flume-conf.properties"));
       String agentName = commandLine.getOptionValue('n', "agent");
+        if (commandLine.hasOption("i")) {
+            agentName = agentName + '_' + StringUtils.replace(RIP.getIp(), ".", "_");
+        }
+
       boolean reload = !commandLine.hasOption("no-reload-conf");
 
       if (commandLine.hasOption('h')) {

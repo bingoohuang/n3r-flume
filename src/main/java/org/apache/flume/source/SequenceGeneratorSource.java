@@ -111,8 +111,13 @@ public class SequenceGeneratorSource extends AbstractSource implements
 
     private Event createEvent() {
         try {
-            TimeUnit.MILLISECONDS.sleep(sleepMinMillis
+            if (sleepMaxMillis > sleepMinMillis) {
+                TimeUnit.MILLISECONDS.sleep(sleepMinMillis
                     + random.nextInt(sleepMaxMillis - sleepMinMillis));
+            }
+            else {
+                TimeUnit.MILLISECONDS.sleep(sleepMinMillis);
+            }
         } catch (InterruptedException e) {
             // ignore.
         }

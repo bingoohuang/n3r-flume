@@ -1,0 +1,20 @@
+${agentName}.sources = ${sources} rseq
+${agentName}.channels = mem
+${agentName}.sinks = avro
+
+${agentName}.sources.rseq.type = seq
+${agentName}.sources.rseq.sleepMinMillis = 3000
+${agentName}.sources.rseq.sleepMaxMillis = 3000
+${agentName}.sources.rseq.interceptors = host static
+${agentName}.sources.rseq.interceptors.host.type = host
+${agentName}.sources.rseq.interceptors.static.type = multi_static
+${agentName}.sources.rseq.interceptors.static.keyValues = server:HeartBeat module:HeartBeat
+${agentName}.sources.rseq.channels = mem
+
+${agentName}.sinks.avro.type = avro
+${agentName}.sinks.avro.hostname = ${firstIp}
+${agentName}.sinks.avro.port = 10010
+${agentName}.sinks.avro.channel = mem
+
+${agentName}.channels.mem.type = memory
+${agentName}.channels.mem.capacity = 100

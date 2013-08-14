@@ -18,14 +18,12 @@
 package org.apache.flume.node;
 
 import com.google.common.collect.Maps;
+import org.apache.commons.io.IOUtils;
 import org.apache.flume.conf.FlumeConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -186,7 +184,7 @@ public class PropertiesFileConfigurationProvider extends
   public FlumeConfiguration getFlumeConfiguration() {
     BufferedReader reader = null;
     try {
-      reader = new BufferedReader(new FileReader(file));
+      reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
       Properties properties = new Properties();
       properties.load(reader);
       return new FlumeConfiguration(toMap(properties));
@@ -194,14 +192,7 @@ public class PropertiesFileConfigurationProvider extends
       LOGGER.error("Unable to load file:" + file
           + " (I/O failure) - Exception follows.", ex);
     } finally {
-      if (reader != null) {
-        try {
-          reader.close();
-        } catch (IOException ex) {
-          LOGGER.warn(
-              "Unable to close file reader for file: " + file, ex);
-        }
-      }
+        IOUtils.closeQuietly(reader);
     }
     return new FlumeConfiguration(new HashMap<String, String>());
   }

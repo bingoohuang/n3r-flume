@@ -1,0 +1,8 @@
+${agentName}.sources.${source}.type = org.n3r.flume.source.exec.ExecBlockSource
+${agentName}.sources.${source}.command = tail -F ${file}
+${agentName}.sources.${source}.boundaryRegex = ^\\d{2}:\\d{2}:\\d{2},\\d{3}\\s
+${agentName}.sources.${source}.interceptors = host static
+${agentName}.sources.${source}.interceptors.host.type = host
+${agentName}.sources.${source}.interceptors.static.type = multi_static
+${agentName}.sources.${source}.interceptors.static.keyValues = server:${server} module:${module}
+${agentName}.sources.${source}.channels = mem

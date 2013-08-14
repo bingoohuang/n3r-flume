@@ -8,7 +8,7 @@
 
     <appender name="Console2" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} - %msg%n</pattern>
+            <pattern>%d{HH:mm:ss.SSS} -%X{host} %X{module} %msg%n</pattern>
         </encoder>
     </appender>
 
@@ -37,7 +37,7 @@
     </appender>
 
     <root level="INFO">
-        <appender-ref ref="Console" />
+        <appender-ref ref="Console2" />
     </root>
 
     <logger name="org.apache.flume.sink.LoggerSink" additivity="false">
