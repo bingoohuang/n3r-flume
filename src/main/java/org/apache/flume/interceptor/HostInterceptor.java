@@ -25,7 +25,7 @@ import java.util.Map;
 
 import org.apache.flume.Context;
 import org.apache.flume.Event;
-import org.n3r.core.lang.RIP;
+import org.n3r.flume.utils.RIP;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

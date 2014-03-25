@@ -5,7 +5,7 @@ import com.google.common.collect.Maps;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
-import org.n3r.core.lang.Substituters;
+import org.n3r.flume.utils.Substituters;
 
 import java.io.*;
 import java.util.Collections;

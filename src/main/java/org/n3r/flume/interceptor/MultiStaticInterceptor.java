@@ -20,12 +20,12 @@ package org.n3r.flume.interceptor;
 
 import static org.n3r.flume.interceptor.MultiStaticInterceptor.Constants.*;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
@@ -83,8 +83,6 @@ public class MultiStaticInterceptor implements Interceptor {
    */
   @Override
   public Event intercept(Event event) {
-    if (MapUtils.isEmpty(keyValues)) return event;
-
     Map<String, String> headers = event.getHeaders();
 
     for(Map.Entry<String, String> entry : keyValues.entrySet()) {
@@ -138,9 +136,6 @@ public class MultiStaticInterceptor implements Interceptor {
     public Interceptor build() {
       logger.info(String.format("Creating StaticInterceptor: preserveExisting=%s,keyValues=%s",
               preserveExisting, keyValues));
-
-      if (StringUtils.isEmpty(keyValues))
-          return new MultiStaticInterceptor(preserveExisting, null);
 
       Map<String, String> kvMap = new HashMap<String, String>();
       Splitter splitter = Splitter.onPattern("\\s").omitEmptyStrings().trimResults();
